@@ -503,6 +503,18 @@ function FESpaces.FESpace(_trian::DistributedTriangulation,reffe;split_own_and_g
   DistributedSingleFieldFESpace(spaces,gids,trian,vector_type)
 end
 
+function FESpaces.ConstantFESpace(model::DistributedDiscreteModel;
+  vector_type::Type{V}=Vector{Float64},
+  field_type::Type{T}=Float64) where {V,T}
+  spaces = map(local_views(model)) do m
+    FESpaces.ConstantFESpace(m;vector_type,field_type)
+  end
+  gids = generate_gids(model,spaces)
+  trian = DistributedTriangulation(map(get_triangulation,spaces),model)
+  pvector_type = _find_vector_type(spaces,gids)
+  DistributedSingleFieldFESpace(spaces,gids,trian,pvector_type)
+end
+
 function _find_vector_type(spaces,gids;split_own_and_ghost=false)
   local_vector_type = get_vector_type(PartitionedArrays.getany(spaces))
   Tv = eltype(local_vector_type)
