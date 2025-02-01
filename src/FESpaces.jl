@@ -907,7 +907,7 @@ function FESpaces.ConstantFESpace(
   indices = map(partition(cell_gids)) do cell_indices
     me = part_id(cell_indices)
     if constraint_type == :global
-      LocalIndices(ldof,me,Int(1):Int(ldof),Fill(Int32(1),ldof))
+      LocalIndices(1,me,Int(1):Int(ldof),Fill(Int32(1),ldof))
     else
       LocalIndices(nranks,me,Int(ldof*(me-1)+1):Int(ldof*me),Fill(Int32(me),ldof))
     end
