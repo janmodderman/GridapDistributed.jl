@@ -23,6 +23,8 @@ function main(distribute,np)
   gids = get_free_dof_ids(V)
   @test length(gids) == 1
 
+  @test num_free_dofs(V) == 1
+
   a((u,λ),(v,μ)) = ∫(u*v + λ*v + μ*u)dΩ 
   A = assemble_matrix(a,X,X)
 
@@ -32,7 +34,19 @@ function main(distribute,np)
   gids = get_free_dof_ids(V2)
   @test length(gids) == 4
 
+  @test num_free_dofs(V2) == 4
+
   A2 = assemble_matrix(a,X2,X2)
+
+  # for i in [1,2,3,4,5,6]
+  #   V = ConstantFESpace(model; field_type=VectorValue{i,Float64})
+  #   gids = get_free_dof_ids(V)
+  #   @test length(gids) == i
+
+  #   V2 = ConstantFESpace(model; field_type=VectorValue{i,Float64},constraint_type=:local)
+  #   gids = get_free_dof_ids(V2)
+  #   @test length(gids) == i*4
+  # end # for
 end
 
 end
